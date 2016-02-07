@@ -1,0 +1,273 @@
+// prucode.hp
+
+#ifndef __PRUCODE_HP__
+#define __PRUCODE_HP__
+
+// Definitions
+
+// Refer to this mapping in the file - pruss_intc_mapping.h
+#define PRU0_PRU1_INTERRUPT     17
+#define PRU1_PRU0_INTERRUPT     18
+#define PRU0_ARM_INTERRUPT      19
+#define PRU1_ARM_INTERRUPT      20
+#define ARM_PRU0_INTERRUPT      21
+#define ARM_PRU1_INTERRUPT      22
+
+#define CONST_PRUCFG         C4
+#define CONST_PRU01DRAM      C24
+#define CONST_PRU10DRAM      C25
+#define CONST_PRUSHAREDRAM   C28
+#define CONST_DDR            C31
+
+#define ADC_TSC    0x44E0D000
+#define FIFO0COUNT 0x44E0D0E4
+#define FIFO0DATA  0x44E0D100
+
+#define PRUSHAREDRAM 0x00010000 //12kB
+#define PRUDRAM1 0x00000000
+#define PRUDRAM2 0x00002000
+#define PRUDRAMSIZE 8192
+#define PRUSHAREDRAMSIZE 12288
+
+
+
+//Register usage for PRU1
+
+#define CALLREG r0.w2
+#define ENABLESTEPBUFFER r0.b0
+#define DIVISORSHIFT r0.b1
+
+//Registers holding constants
+#define ADC_ADDR r1
+#define OUTMASK r2
+
+//Temporary values - used only for setup routines
+#define ADDR r3
+#define VALUE r4
+
+//Therefore r3-r24 are not reserved during the main routine
+#define statusword r3
+#define VALUE0 r4
+#define VALUE1 r5
+#define VALUE2 r6
+#define VALUE3 r7
+#define VALUE4 r8
+
+#define X0 r4
+#define X1 r5
+#define X2 r6
+#define X3 r7
+#define Y0 r8
+#define Y1 r9
+#define Y2 r10
+#define Y3 r11
+#define Y4 r12
+
+#define Z0 r13
+
+//coefficients for multiplying past input values with
+#define GX0 r14
+#define GX1 r15
+#define GX2 r16
+#define GX3 r17
+//coefficients for multiplying past output values with
+#define GY1 r18
+#define GY2 r19
+#define GY3 r20
+#define GY4 r21
+//coefficient for last value from PRU0 calculation
+#define GZ0 r22
+
+//offsets for input and output
+#define XOFFSET r23.w0
+#define YOFFSET r23.w2
+
+
+#define NXMAX	r24.w0
+#define NX		r24.w2
+
+
+//Multiplier registers
+#define MACSETUP r25
+#define MAC_A r29
+#define MAC_B r28
+#define MAC_LSP r26
+#define MAC_MSP r27
+//r30 and r31 are reserved for output and interrupts
+
+
+
+// My Macros
+//pure multiplication
+.macro DISABLEMAC
+	//clear bit 0
+	AND  MACSETUP.b0,MACSETUP.b0,0xFE
+	XOUT 0,MACSETUP,1
+.endm
+
+//enable MAC mode
+.macro ENABLEMAC
+	//set bit 0
+	OR MACSETUP.b0,MACSETUP.b0,0x01
+	XOUT 0,MACSETUP,1
+//	//set all bits of multiplier to zero to allow negative numbers
+//	MOV MAC_A, 0x00000000
+//	MOV MAC_B, 0x00000000
+.endm
+
+//clear accumulator (attention: the mac mode has to be enabled and r25[0]=1 must hold already)
+.macro CLRMAC
+	//set bit 0 and 1
+	OR MACSETUP.b0,MACSETUP.b0,0x03
+	XOUT 0,MACSETUP,1
+	//reset the clear bit such that multiplication does not have to clear this every time
+	AND MACSETUP.b0,MACSETUP.b0,0xFD
+.endm
+
+//multiply the contents of MAC_A and MAC_B
+//attention: to avoid an extra operation, the MACSETUP register (r25) must be in the proper state already, 
+//such as the one obtained after ENABLEMAC or CLRMAC (see example)
+.macro MAC
+	XOUT 0,MAC_A,8
+	XOUT 0,MACSETUP,1
+.endm
+
+//retrieve product such that it is stored in MAC_MSP:MAC_LSP (Most Significant Product:Least Significant Product)
+.macro GETPRODUCT
+	XIN 0,MAC_LSP,8
+.endm
+
+//push the factors to the MAC module
+.macro PUSHFACTORS
+	XOUT 0,MAC_A,8
+.endm
+
+// USAGE (to calculate 2x3 + 25x(-25) for example): 
+//	ENABLEMAC
+//  ... other multiplications etc leaving MAC enabled ...
+//	CLRMAC
+// 	MOV MAC_A,2
+//  MOV MAC_B,3
+//  MAC 
+//	MOV MAC_A,25
+//	MOV MAC_B,0
+//	SUB MAC_B,MAC_B,MAC_A
+//	MAC
+//	GETPRODUCT
+//  
+//	MAC_LSP contains the product in case negative numbers (in two-complement format) are involved, but no carry flag is available
+//	MAX_LSP and MAC_MSP contain the lower and upper 16 bits of the product if only positive numbers are involved, carry flag is valid
+
+
+.macro PAUSE
+	QBNE ENDPROGRAM,r0,r0
+.endm
+
+.macro PAUSE10
+	PAUSE
+	PAUSE
+	PAUSE
+	PAUSE
+	PAUSE
+	
+	PAUSE
+	PAUSE
+	PAUSE
+	PAUSE
+	PAUSE
+.endm
+
+.macro PAUSE100
+	PAUSE10
+	PAUSE10
+	PAUSE10
+	PAUSE10
+	PAUSE10
+	
+	PAUSE10
+	PAUSE10
+	PAUSE10
+	PAUSE10
+	PAUSE10
+.endm
+
+//**********FIFO ROUTINES**************//
+//attention: all offsets (3rd argument) are reduced by one, as ADC_ADDR was increased by one before
+
+//Read a value from the FIFO0 buffer of the ADC
+.macro  READFIFO
+.mparam dst
+    LBBO    dst,ADC_ADDR,0xFF,4
+.endm
+
+//Read a how many values are stored in the FIFO0 register of the ADC
+.macro  READFIFOCNT
+.mparam dst
+    LBBO    dst,ADC_ADDR,0xE3,2
+.endm
+
+//Read the status register of the ADC IRQ
+.macro  READFIFOIRQ
+.mparam dst
+    LBBO    dst,ADC_ADDR,0x23,2
+.endm
+
+//Clear the stats register of the ADC IRQ
+.macro  CLEARFIFOIRQ
+.mparam dst
+	MOV 	dst,0x0FFF
+    SBBO    dst,ADC_ADDR,0x27,2
+    READFIFOIRQ dst
+.endm
+
+//Trigger a new ADC single-shot measurement
+.macro ENABLESTEP1
+	//STEPENABLE:    
+	//enable only STEP1 a.k.a. bit 1
+    MOV ENABLESTEPBUFFER,0x02 
+    SBBO ENABLESTEPBUFFER,ADC_ADDR,0x53,1
+.endm
+
+//********* End of FIFO routines *******//
+
+
+//Write a value to the DAC output
+.macro  WRITEOUT
+.mparam src
+    AND   r30,src,OUTMASK
+    PAUSE
+    PAUSE //second pause is exagerated
+    SET r30.t12  //send the output latch pulse
+.endm
+
+.macro  MUTEWRITEOUT
+.mparam src
+    AND   r30,src,OUTMASK
+    PAUSE
+    PAUSE //second pause is exagerated
+    PAUSE
+    //SET r30.t12  //send the output latch pulse
+.endm
+
+//fill the entire PRU DRAM (of both PRUs) with val (2-byte-value)
+.macro  FILLDRAM
+.mparam val
+    MOV ADDR,PRUDRAMSIZE<<1
+FILLDRAMREPEAT2:
+    SUB ADDR,ADDR,2
+    SBCO val,CONST_PRU01DRAM,ADDR,2
+	QBNE FILLDRAMREPEAT2,ADDR,0
+.endm
+
+//fill the entire DRAM with val (2-byte-value)
+.macro  FILLSHAREDRAM
+.mparam val
+    MOV ADDR,PRUSHAREDRAMSIZE
+FILLSHAREDRAMREPEAT2:
+    SUB ADDR,ADDR,2
+    SBCO val,CONST_PRUSHAREDRAM,ADDR,2
+	QBNE FILLSHAREDRAMREPEAT2,ADDR,0
+.endm
+
+
+#endif // __PRUCODE_HP__

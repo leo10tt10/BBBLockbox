@@ -1,0 +1,58 @@
+We have
+0x0000 0000: PRU0 Memory 8KB
+0x0000 2000: PRU1 Memory 8KB
+0x0001 0000: SHARED Memory 12 KB
+
+Typical data size: 2 Bytes -> 4k datapoints in PRU0/1
+							  6k datapoints in shared memory
+
+							  Envisaged sampling rate: 1 MHz / 6k -> 166 Hz -> Too few for low frequency precision
+							  												   Have two separate sampling tables
+							  												   Have PRU0 do everything for easier memory synchronization
+							  												   Store all datapoints in PRU0/1 Memory -> This permits double storage
+							  												   Still, with 4k points, 250 Hz resolution is not sufficient
+							  												   Rather 10 Hz is desirable
+							  												   Therefore, make 
+							  												   
+							  		
+							  		
+Readout routine uses PRU0 and PRU1 data storage: use a continuum of memory from 0000 to 4000
+
+Acquisition - PRU1:
+Acquire at maximum bandwidth
+
+
+									
+Timing test
+Runtime loop with totally 2 instructions for 100M times: 1.126s -> 5ns/cycle
+										 for 1000M times: 10.124s -> 5ns/cycle
+MACROS requiring extra time: 
+PAUSE: 1 cycle
+WRITEOUT: 4 cycles
+READFIFOCNT: 42 cycles (=1 LBBO instruction)										   
+READFIFO: 42 cycles (=1 LBBO instruction)
+LBBO 1,2,4 Bytes from PRU DRAM: 3 cycles
+LBBO 8 Bytes from PRU DRAM: 4 cycles
+LBBO 12 Bytes from PRU DRAM: 5 cycles
+LBBO 16 Bytes from PRU DRAM: 6 cycles
+LBCO 4 Bytes from DDR: 43 cycles
+LBCO 8 Bytes from DDR: 44 cycles
+LBCO 12 Bytes from DDR: 45 cycles
+LBCO 16 Bytes from DDR: 46 cycles
+SBCO 4 bytes to DDR: 2 cycles
+SBCO 16 bytes to DDR: 5 cycles
+
+One sampling (average): 
+minimum delays stepdelay=0x00000000: 895.941406 cycles
+stepdelay=0x01000000: 962.671875
+stepdelay=0x10000000: 1962.640625
+stepdelay=0x0F000000: 1896.039062
+stepdelay=0x0E000000: 1829.351562
+difference: 66.6-66.7 PRU steps = 1 TSADC step: = 333.33 ns == 3 MHz -> Complete sampling takes 13.43 ADC steps, should be 15
+
+1.357 1M
+2.585 3M
+7.591 11M
+-> 10M loops =^ 6.234s-> 0.6234 microseconds per readout -> 1.604 MHz!!!
+
+7.1 microseconds per readout with single-step mode -> 1.4 MHz is possible!!!	
