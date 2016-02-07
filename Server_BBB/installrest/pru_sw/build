@@ -1,0 +1,17 @@
+#/usr/bin/sh
+
+cd app_loader/interface
+make clean
+make
+cd ../..
+cp app_loader/lib/* /lib/
+cp app_loader/include/* /usr/include
+
+cd utils/pasm_source/
+chmod 755 ./linuxbuild
+./linuxbuild
+cd ../..
+chmod 755 utils/pasm
+cp utils/pasm /bin/
+chmod 755 /bin/pasm
+

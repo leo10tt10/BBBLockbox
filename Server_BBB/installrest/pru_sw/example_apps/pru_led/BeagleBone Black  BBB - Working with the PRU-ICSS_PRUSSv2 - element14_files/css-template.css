@@ -1,0 +1,339 @@
+h2.neg-margin{
+	margin-left: -25px;	
+}
+
+div.jive-table tr.even {
+    background-color: #EEEEEE;
+}
+
+div.jive-table table.ss-attribute-table th,
+div.jive-table table.ss-attribute-table td{
+    line-height: 2.2em;
+	vertical-align:middle;
+}
+
+div.jive-table table.ss-attribute-table th{
+	white-space:			nowrap;	
+}
+
+
+div.jive-table table.ss-attribute-table tr.depricated td{
+	background:			#FFF0DF;	
+}
+
+td input.jive-form-textinput-variable{
+	margin-top: 4px;
+	display: inline-block;
+}
+
+.button-bar a {
+    background: none repeat scroll 0 0 white;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    float: none;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0 0.5em 2px 0;
+    padding: 2px 8px;
+    vertical-align: middle;
+	-moz-border-radius: 0.5em 0.5em 0.5em 0.5em;
+	border-radius: 0.5em 0.5em 0.5em 0.5em;
+	text-decoration: none;
+	border: 1px solid #ccc;
+	*margin-top: -2px;
+}
+
+
+
+.button-bar a.edit-disabled {
+	background-color: #eee;
+	color: #999;
+	cursor: default;	
+}
+
+
+.fr{
+	float: right;	
+}
+
+.fr a{
+	line-height: 14px;
+}
+
+.button-bar a:hover {
+    text-decoration: none;
+}
+
+hr.ss-spacer{
+	margin: 25px 0;	
+}
+
+hr.ss-spacer-tall{
+	margin: 50px 0 10px 0;	
+}
+
+hr.ss-spacer-nopad-bot{
+	margin:25px 0 0 0;
+}
+
+span.namespace-label{
+	display: inline-block;	
+	min-width: 120px;
+	width: auto !important;
+	width: 120px;
+	margin-right: 13px;
+	*margin-right: 18px;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+span.ns-node-head{
+	color: #000;	
+}
+
+table.add-namespace-table td{
+	padding: 7px 0;	
+}
+
+td.bot-dash{
+	border-bottom: 	1px dashed #ccc;
+	padding:		10px 0;
+}
+
+.jive-att-block {
+    -moz-border-radius: 6px 6px 6px 6px;
+    background: 		none repeat scroll 0 0 #FFFFFF;
+    border: 			1px solid #DADADA;
+    margin: 			0 20px 22px 0;
+	width: 				350px;
+	float: 				left;
+	display:			inline-block;
+}
+
+.nomar{
+	margin-right: 		0;	
+}
+
+.jive-att-list ul{
+	list-style-type:	none;
+	padding: 	        0;
+	margin:				0;
+	
+}
+
+.jive-att-list ul li.hover{
+	background: 		#BBFFFF;
+}
+
+.jive-att-list label{
+	display: 			block;	
+	padding:            0;
+	line-height:		27px;
+	margin: 			0 15px 0 10px;
+	border-bottom:		1px dotted #ccc;
+}
+
+.jive-att-list ul li:last-child label{
+	border-bottom:		none;	
+}
+
+.jive-att-list label input{
+	margin-top: 2px;	
+	position: relative;
+	top: 1px;
+}
+
+div#attHeader{
+	clear:			both;
+	height: 		40px;
+	width:			723px;
+
+}
+
+div#attHeader h2.blk{
+	color: 			#000;
+	display:		inline-block;
+	float: 			left;
+}
+
+div#attHeader select#attSelectList{
+	float:			right;
+	display:		inline-block;
+	width:			350px;
+	margin-top:		10px;
+}
+
+ul.jstree li span.button-bar{
+	visibility:			hidden;	
+}
+
+ul.jstree li span.button-bar.show{
+	visibility:			visible;
+}
+
+div.global-att-container{
+	background-color:			#c5e1ee;
+	margin: 					15px;
+	-moz-border-radius: 		15px;
+	border-radius: 				15px;
+	padding:                    15px;
+	border:						1px solid #fff;
+}
+
+body.jive-body-content-blog div.global-att-container,
+body.jive-body-content-discussion div.global-att-container,
+body.jive-body-formpage-document div.global-att-container,
+body.jive-body-formpage-discussion div.global-att-container,
+body.jive-body-formpage-blog div.global-att-container{
+	margin: 					15px 0;
+}
+
+body.jive-body-content-document div.global-att-container{
+	margin: 					15px;
+}
+
+body.jive-body-content-roadtest div.global-att-container{
+	margin: 					15px 0 ;
+	width:						685px;
+}
+
+div.global-att-container h3 span{
+	font-size:					11px;
+	color:						#444;
+	font-weight:				normal;
+	margin-left: 				8px;
+}
+
+div.global-att-container input#global-att-input{
+	width:						100%;	
+}
+
+div.global-att-container ul,
+div.global-att-container li{
+	padding:                    0;
+	margin:						0;
+}
+
+div.global-att-container li{
+	line-height:				21px;	
+	font-size:					11px;
+}
+
+div.global-att-container ul.att-listing{
+	margin-top:					15px;	
+}
+
+div.global-att-container ul.att-listing li{
+	display:					inline-block;
+	width:						auto;
+	float: 						left;
+	background-color:			#eff1ee;
+	border:						2px solid #fff;
+	-moz-border-radius:			5px;
+	border-radius:				5px;
+	padding:                    5px;
+	line-height:				11px;
+	margin-right:				5px;
+	margin-bottom:				5px;
+}
+
+ul#related-attributes{
+	zoom: 1;
+}
+
+ul#related-attributes li{
+	
+}
+
+ul#related-attributes:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+ul.jstree li{	
+	line-height: 				27px;
+}
+
+ul.jstree li span a{
+	border:						none;	
+}
+
+.jstree li.open-node, 
+.jstree li.closed-node {
+    background-position: 7px 0.6em;
+}
+
+a{
+	outline:		none;	
+}
+
+ul#searchAttributeOptions{
+	border: 		1px solid #ddd;	
+	height: 		auto;
+	position:		absolute;
+	background-color: #ffffff;
+	z-index:		9999;
+}
+#quickSearch ul#searchAttributeOptions{
+    margin-left: 	38px;
+    margin-top: 	-3px;
+}
+ul#searchAttributeOptions li{
+	width:			300px;
+	background: 	#fff;
+	z-index:		999999999999999999999999999999999999999999999999999999999999999999999999999999;
+}
+
+ul#searchAttributeOptions li{
+	padding:        2px 5px;
+	cursor:			pointer;
+}
+
+table.space-table #quickSearch ul#searchAttributeOptions{
+	*margin-left:	-189px;
+	*margin-top:24px;
+}
+
+ul#searchAttributeOptions li.active{
+	background:		#003;
+	color:			#fff;
+}
+
+#attribute_root_ul li span{
+	cursor:			pointer;
+}
+
+div.global-att-container h3{
+	background:					url(../images/icon-global-att.jpg) 0 -1px no-repeat;	
+	padding: 	                1px 0 12px 25px;
+	font-size:					13px;
+	color:						#333;
+	border-bottom:				1px dotted #fff;
+	margin-bottom:				7px;	
+}
+
+div.global-att-container ul.att-listing li a{
+	width:						11px;
+	height:						11px;
+	text-indent:                -999999px;
+	display:					inline-block;
+	padding:                    0;
+	margin:						0 0 0 5px;
+	background:					url(../images/blue-x.jpg) 0 0 no-repeat;
+}
+
+div.jive-table table.ss-attribute-table tr td a.depricate{
+	background:			url(../images/jive-icon-accept-16x16.gif) 0 0 no-repeat;
+	height:				16px;
+	width:				16px;
+	text-indent: 		-99999px;
+	display:			block;
+}
+
+div.jive-table table.ss-attribute-table tr.depricated td a.depricate{
+	background:			url(../images/jive-icon-delete-16x16.gif) 0 0 no-repeat;
+}
